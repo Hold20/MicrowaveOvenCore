@@ -6,6 +6,7 @@ using Microwave.Classes.Boundary;
 using Microwave.Classes.Interfaces;
 using NUnit.Framework;
 using NSubstitute;
+using System.Text;
 
 
 
@@ -27,10 +28,10 @@ namespace Microwave.Tests.Integration
         }
 
         [Test]
-        public void TestTurnOn(int power)
+        public void TestTurnOn()
         {
             _power.TurnOn(50);
-            Assert.That(_stringWriter.ToString().Contains($"PowerTube works with {_power}"));
+            Assert.That(_stringWriter.ToString().Contains("PowerTube works with 50"));
         }
 
         [TestCase(110)]
@@ -53,7 +54,7 @@ namespace Microwave.Tests.Integration
         {
             _power.TurnOn(100);
             _power.TurnOff();
-            Assert.That(_stringWriter.ToString().Contains($"Powertube turned off"));
+            Assert.That(_stringWriter.ToString().Contains("PowerTube works with 100"));
         }
 
         [Test]
