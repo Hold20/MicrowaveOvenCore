@@ -14,8 +14,8 @@ namespace Microwave.Tests.Integration
 {
     public class Step1
     {
-        private Output _output;
-        private PowerTube _power;
+        private IOutput _output;
+        private IPowerTube _power;
         private StringWriter _stringWriter;
 
         [SetUp]
@@ -54,7 +54,7 @@ namespace Microwave.Tests.Integration
         {
             _power.TurnOn(100);
             _power.TurnOff();
-            Assert.That(_stringWriter.ToString().Contains("PowerTube works with 100"));
+            Assert.That(_stringWriter.ToString().Contains("PowerTube turned off"));
         }
 
         [Test]
