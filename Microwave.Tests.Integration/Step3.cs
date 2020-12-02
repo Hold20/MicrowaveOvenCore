@@ -12,22 +12,32 @@ namespace Microwave.Tests.Integration
     {
         private IOutput _output;
         private ILight _light;
+        private StringWriter _stringWriter;
 
         [SetUp]
         public void SetUp()
         {
             _output = new Output();
             _light = new Light(_output);
+            _stringWriter = new StringWriter();
+            Console.SetOut(_stringWriter);
         }
 
         [Test]
-        public void TurnOnLight()
+        public void TurnOnLight_WhenWasOff()
         {
+            _light.TurnOn();
+            Assert.That(_stringWriter.ToString().Contains("Light is turned on"));
+        }
 
+        [Test]
+        public void TurnOffLight_WhenWasOn()
+        {
+            _light.TurnOn();
+            _light.TurnOff();
+            Assert.That(_stringWriter.ToString().Contains("Light is turned off"));
         }
 
     }
 
-    
-     
 }
