@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Threading;
 using Microwave.Classes.Boundary;
 using Microwave.Classes.Controllers;
 using Microwave.Classes.Interfaces;
 using NSubstitute;
 using NUnit.Framework;
+using Timer = Microwave.Classes.Boundary.Timer;
 
 namespace Microwave.Tests.Integration
 {
@@ -43,13 +43,27 @@ namespace Microwave.Tests.Integration
         [Test]
         public void StopCooking()
         {
-            _cookController.StartCooking(50,60);
+            _cookController.StartCooking(50, 60);
             _cookController.Stop();
-            Assert.That(_stringWriter.ToString().Contains("Powertube turned off"));
+            Assert.That(_stringWriter.ToString().Contains("PowerTube turned off"));
         }
 
+        [Test]
+        public void OnTimerExpired_TurnOff()
+        {
+            _cookController.StartCooking(50, 60);
+            _timer.Expired += Raise.Event();
+            Assert.That(_stringWriter.ToString().Contains("PowerTube turned off"));
+        }
 
-
+        [Test]
+        public void OnTimerTick_DisplayCalled()
+        {
+            _cookController.StartCooking(50,60);
+            _timer.TimeRemaining.Returns(60);
+            _timer.TimerTick += Raise.EventWith(this, EventArgs.Empty);
+            Assert.That(_stringWriter.ToString().Contains("Display shows: 01:00"));
+        }
 
     }
 }
