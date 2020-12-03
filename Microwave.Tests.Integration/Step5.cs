@@ -33,13 +33,13 @@ namespace Microwave.Tests.Integration
             _power = new PowerTube(_output);
             _display = new Display(_output);
             _light = new Light(_output);
-            _cookController = new CookController(_timer, _display, _power);
             _timer = Substitute.For<ITimer>();
             _door = Substitute.For<IDoor>();
             _powerButton = Substitute.For<IButton>();
             _timeButton = Substitute.For<IButton>();
             _startCancelButton = Substitute.For<IButton>();
             _userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
+            _cookController = new CookController(_timer, _display, _power);
             _stringWriter = new StringWriter();
             Console.SetOut(_stringWriter);
         }
@@ -50,15 +50,24 @@ namespace Microwave.Tests.Integration
             _powerButton.Press();
             _timeButton.Press();
             _startCancelButton.Press();
+            while(_timer.TimeRemaining != 0 )
+            {}
+            Assert.That(_stringWriter.ToString().Contains("Display cleared"));
+        }
+
+        [Test]
+        public void CookingIsDone_LightOff()
+        {
+            _powerButton.Press();
+            _timeButton.Press();
+            _startCancelButton.Press();
 
             while (_timer.TimeRemaining != 0)
             {
 
             }
 
-            Assert.That(_stringWriter.ToString().Contains("Display cleared"));
+            Assert.That(_stringWriter.ToString().Contains("Light is turned off"));
         }
-
-
     }
 }
