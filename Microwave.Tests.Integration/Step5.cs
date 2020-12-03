@@ -41,33 +41,42 @@ namespace Microwave.Tests.Integration
             _userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
             _cookController = new CookController(_timer, _display, _power);
             _stringWriter = new StringWriter();
+            _cookController.UI = _userInterface;
+
             Console.SetOut(_stringWriter);
         }
+
+
+        [Test]
+        public void CookingIsDone_LightOff() //lorte afl hvor lortet ik virker fordi det lort
+        {
+            _powerButton.Pressed += Raise.Event();
+            _timeButton.Pressed += Raise.Event();
+            _startCancelButton.Pressed += Raise.Event();
+
+            while (_timer.TimeRemaining != 0)
+            {
+
+            }
+            Assert.That(_stringWriter.ToString().Contains("Light off"));
+        }
+
 
         [Test]
         public void CookingIsDone_ClearDisplay()
         {
-            _powerButton.Press();
-            _timeButton.Press();
-            _startCancelButton.Press();
-            while(_timer.TimeRemaining != 0 )
-            {}
-            Assert.That(_stringWriter.ToString().Contains("Display cleared"));
-        }
-
-        [Test]
-        public void CookingIsDone_LightOff()
-        {
-            _powerButton.Press();
-            _timeButton.Press();
-            _startCancelButton.Press();
+            _powerButton.Pressed += Raise.Event();
+            _timeButton.Pressed += Raise.Event();
+            _startCancelButton.Pressed += Raise.Event();
 
             while (_timer.TimeRemaining != 0)
             {
 
             }
 
-            Assert.That(_stringWriter.ToString().Contains("Light is turned off"));
+            Assert.That(_stringWriter.ToString().Contains("Display cleared"));
         }
+
+        
     }
 }
