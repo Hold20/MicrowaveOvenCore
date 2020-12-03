@@ -33,17 +33,21 @@ namespace Microwave.Tests.Integration
             Console.SetOut(_stringWriter);
         }
 
-        [Test]
-        public void StartCooking_WithValidParameters()
+        [TestCase(50)]
+        [TestCase(700)]
+        public void StartCooking_TurnOn(int power)
         {
-            _cookController.StartCooking(50,60);
-            Assert.That(_stringWriter.ToString().Contains("PowerTube works with 50"));
+            int time = 60;
+            _cookController.StartCooking(power, time);
+            Assert.That(_stringWriter.ToString().Contains($"PowerTube works with {power}"));
         }
 
         [Test]
-        public void StopCooking()
+        public void Stop_TurnOff()
         {
-            _cookController.StartCooking(50, 60);
+            int time = 60;
+            int power = 50;
+            _cookController.StartCooking(power, time);
             _cookController.Stop();
             Assert.That(_stringWriter.ToString().Contains("PowerTube turned off"));
         }
@@ -51,19 +55,11 @@ namespace Microwave.Tests.Integration
         [Test]
         public void OnTimerExpired_TurnOff()
         {
-            _cookController.StartCooking(50, 60);
+            int time = 60;
+            int power = 50;
+            _cookController.StartCooking(power, time);
             _timer.Expired += Raise.Event();
             Assert.That(_stringWriter.ToString().Contains("PowerTube turned off"));
         }
-
-        [Test]
-        public void OnTimerTick_DisplayCalled()
-        {
-            _cookController.StartCooking(50,60);
-            _timer.TimeRemaining.Returns(60);
-            _timer.TimerTick += Raise.EventWith(this, EventArgs.Empty);
-            Assert.That(_stringWriter.ToString().Contains("Display shows: 01:00"));
-        }
-
     }
 }
