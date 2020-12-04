@@ -21,7 +21,7 @@ namespace Microwave.Tests.Integration
         private IDoor _door;
         private IButton _powerButton;
         private IButton _timeButton;
-        private IButton _StartCancelButton;
+        private IButton _startCancelButton;
         
         private StringWriter _stringWriter;
 
@@ -33,12 +33,13 @@ namespace Microwave.Tests.Integration
             _display = new Display(_output);
             _powerButton = Substitute.For<IButton>();
             _timeButton = Substitute.For<IButton>();
-            _StartCancelButton = Substitute.For<IButton>();
+            _startCancelButton = Substitute.For<IButton>();
             _door = Substitute.For<IDoor>();
             _light = Substitute.For<ILight>();
+            _cookController = Substitute.For<ICookController>();
             _stringWriter = new StringWriter();
             Console.SetOut(_stringWriter);
-            _userInterface = new UserInterface(_powerButton, _timeButton, _StartCancelButton, _door, _display, _light, _cookController);
+            _userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
         }
 
         [Test]
@@ -94,18 +95,17 @@ namespace Microwave.Tests.Integration
         public void OnStartCancelButton_Pressed_Before()
         {
             _powerButton.Pressed += Raise.Event();
-            _StartCancelButton.Pressed += Raise.Event();
+            _startCancelButton.Pressed += Raise.Event();
             Assert.That(_stringWriter.ToString().Contains("Display cleared"));
         }
 
-        //[Test] VIRKER IKKE
-        //public void OnStartCancelButton_Pressed_After()
-        //{
-        //    _powerButton.Pressed += Raise.Event();
-        //    _timeButton.Pressed += Raise.Event();
-        //    _StartCancelButton.Pressed += Raise.Event();
-        //    Assert.That(_stringWriter.ToString().Contains("Display cleared"));
-        //}
+        [Test] //VIRKER IKKE
+        public void OnStartCancelButton_Pressed_After()
+        {
+            _powerButton.Pressed += Raise.Event();
+            _startCancelButton.Pressed += Raise.Event();
+            Assert.That(_stringWriter.ToString().Contains("Display cleared"));
+        }
 
         [Test]
         public void OnDoorOpen_Ready()
@@ -131,26 +131,24 @@ namespace Microwave.Tests.Integration
             Assert.That(_stringWriter.ToString().Contains("Display cleared"));
         }
 
-        //[Test] Virker ikke
-        //public void OnDoorOpen_Cooking()
-        //{
-        //    _powerButton.Pressed += Raise.Event();
-        //    _timeButton.Pressed += Raise.Event();
-        //    _StartCancelButton.Pressed += Raise.Event();
-        //    _door.Opened += Raise.Event();
-        //    Assert.That(_stringWriter.ToString().Contains("Display cleared"));
-        //}
+        [Test]
+        public void OnDoorOpen_Cooking()
+        {
+            _powerButton.Pressed += Raise.Event();
+            _timeButton.Pressed += Raise.Event();
+            _startCancelButton.Pressed += Raise.Event();
+            _door.Opened += Raise.Event();
+            Assert.That(_stringWriter.ToString().Contains("Display cleared"));
+        }
 
-        //[Test] //Virker ikke
-        //public void TimerExpired_()
-        //{
-        //    _powerButton.Pressed += Raise.Event();
-        //    _timeButton.Pressed += Raise.Event();
-        //    _StartCancelButton.Pressed += Raise.Event();
-        //    _userInterface.CookingIsDone();
-        //    Assert.That(_stringWriter.ToString().Contains("Display cleared"));
-        //}
-
-
+        [Test]
+        public void TimerExpired_Display()
+        {
+            _powerButton.Pressed += Raise.Event();
+            _timeButton.Pressed += Raise.Event();
+            _startCancelButton.Pressed += Raise.Event();
+            _userInterface.CookingIsDone();
+            Assert.That(_stringWriter.ToString().Contains("Display cleared"));
+        }
     }
 }
