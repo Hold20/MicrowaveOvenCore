@@ -31,8 +31,10 @@ namespace Microwave.Test.Unit
         [TestCase(-5)]
         [TestCase(-1)]
         [TestCase(0)]
-        [TestCase(49)]
+        [TestCase(25)]
+        [TestCase(30)]
         [TestCase(800)]
+        [TestCase(701)]
         public void TurnOn_WasOffOutOfRangePower_ThrowsException(int power)
         {
             Assert.Throws<System.ArgumentOutOfRangeException>(() => uut.TurnOn(power));
